@@ -1,3 +1,77 @@
 <resources>
     <string name="app_name">SmartHomeM2M</string>
+
+    <string name="action_info">查看閘道器資訊</string>
+    <string name="action_search">重新搜尋裝置</string>
+    <string name="action_reconnect">重新連線</string>
+
+    <string name="running">正在執行中</string>
+    <string name="pause">暫停</string>
+    <string name="stop">停止</string>
+
+    <string name="ic_rule_start">開始</string>
+    <string name="ic_rule_stop">停止</string>
+    <string name="ic_rule_add">新增規則</string>
+
+    <string name="findgateway">尋找可用的連線中</string>
+    <string name="connecting">自動連線中</string>
+    <string name="searching">搜尋裝置中</string>
+    <string name="gatewayListTitle">可用的連線</string>
+    <string name="nogateway">沒有可用的連線</string>
+
+    <string name="dialog_dismiss_confirm_title">確認取消</string>
+    <string name="dialog_dismiss_confirm_message">這麼做您所輸入的資料將不會被保存</string>
+    <string name="dialog_dismiss_confirm_postive">是</string>
+    <string name="dialog_dismiss_confirm_negative">否</string>
+
+    <string name="smartHomeAddRuleWizard_step1_title">第一步驟</string>
+    <string name="smartHomeAddRuleWizard_step1_message">首先，請命名您的規則。</string>
+    <string name="smartHomeAddRuleWizard_step1_item_name">名稱</string>
+    <string name="smartHomeAddRuleWizard_step2_title">第二步驟</string>
+    <string name="smartHomeAddRuleWizard_step2_message">接著，加入啟動規則的條件。\n例如:\n溫度計溫度大於28度。\n光度計亮度大於600。</string>
+    <string name="smartHomeAddRuleWizard_step2_chooseDevice">裝置:</string>
+    <string name="smartHomeAddRuleWizard_step2_chooseResource">資源:</string>
+    <string name="smartHomeAddRuleWizard_step2_chooseOperator">大於</string>
+    <string name="smartHomeAddRuleWizard_step2_inputValue">數值:</string>
+    <string name="smartHomeAddRuleWizard_step2_result">(空)</string>
+    <string name="smartHomeAddRuleWizard_step2_addCondition">加入</string>
+    <string name="smartHomeAddRuleWizard_step2_reset">重置</string>
+    <string name="smartHomeAddRuleWizard_step2_remove">X</string>
+    <string name="smartHomeAddRuleWizard_step2_chooseAnd">且</string>
+    <string name="smartHomeAddRuleWizard_step2_chooseOr">或</string>
+    <string name="smartHomeAddRuleWizard_step3_title">第三步驟</string>
+    <string name="smartHomeAddRuleWizard_step3_message">加入符合條件時會執行的動作。\n例如:\n電風扇開關設定為開。</string>
+    <string name="smartHomeAddRuleWizard_step3_chooseDevice">裝置:</string>
+    <string name="smartHomeAddRuleWizard_step3_chooseResource">資源:</string>
+    <string name="smartHomeAddRuleWizard_step3_set">設定為</string>
+    <string name="smartHomeAddRuleWizard_step3_inputValue">數值:</string>
+    <string name="smartHomeAddRuleWizard_step3_result">(空)</string>
+    <string name="smartHomeAddRuleWizard_step3_addAction">加入</string>
+    <string name="smartHomeAddRuleWizard_step3_reset">重置</string>
+    <string name="smartHomeAddRuleWizard_step4_title">最後</string>
+    <string name="smartHomeAddRuleWizard_step4_message">檢視您剛剛所制定的規則。</string>
+    <string name="smartHomeAddRuleWizard_step4_ruleName">規則名稱:</string>
+    <string name="smartHomeAddRuleWizard_step4_condition">如果</string>
+    <string name="smartHomeAddRuleWizard_step4_action">則</string>
+    <string name="smartHomeAddRuleWizard_step4_refresh">重新整理</string>
+    <string name="smartHomeAddRuleWizard_step4_addRule">增加規則</string>
+
+    <string name="smartHomeAddRuleWizard_step1_error">名稱不可為空白\n名稱只能是英數中文字</string>
+    <string name="smartHomeAddRuleWizard_step2_error">請至少加入一項條件</string>
+    <string name="smartHomeAddRuleWizard_step3_error">請至少加入一項動作</string>
+    <string name="smartHomeAddRuleWizard_step4_error">目前已經有相同名稱的規則了，請更改</string>
+
+    <string name="smartHomeAddRuleWizard_btn_next">下一步</string>
+    <string name="smartHomeAddRuleWizard_btn_previous">上一步</string>
+    <string name="smartHomeAddRuleWizard_btn_cancel">取消</string>
+    <string name="smartHomeAddRuleWizard_btn_done">完成</string>
+    <string name="smartHomeAddRuleWizard_cancel_message">再按一次返回鍵，將取消新增規則您會失去所有設定且會回到主頁面中。</string>
+    <string-array name="operator">
+        <item>大於</item>
+        <item>等於</item>
+        <item>小於</item>
+    </string-array>
+
+    <string name="title_activity_wizard">WizardActivity</string>
+    <string name="title_activity_add_rule_wizard">AddRuleWizardActivity</string>
 </resources>

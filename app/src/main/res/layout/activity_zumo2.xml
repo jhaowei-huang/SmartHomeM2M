@@ -1,0 +1,121 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    tools:context=".MainActivity"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:text="選擇 zumo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_chooser"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="@dimen/button_wsize"
+                android:layout_height="@dimen/button_hsize"
+                android:id="@+id/frontbutton"
+                android:background="@drawable/up"
+                android:layout_above="@+id/stopbutton"
+                android:layout_alignLeft="@+id/behindbutton"
+                android:layout_alignStart="@+id/behindbutton" />
+
+            <Button
+                android:layout_width="@dimen/button_hsize"
+                android:layout_height="@dimen/button_hsize"
+                android:id="@+id/stopbutton"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/c" />
+
+            <Button
+                android:layout_width="@dimen/button_wsize"
+                android:layout_height="@dimen/button_hsize"
+                android:id="@+id/behindbutton"
+                android:layout_below="@+id/stopbutton"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/down" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="@dimen/button_hsize"
+                android:layout_height="@dimen/button_wsize"
+                android:id="@+id/leftbutton"
+                android:background="@drawable/left"
+                android:layout_alignTop="@+id/rightbutton"
+                android:layout_toLeftOf="@+id/stopbutton"
+                android:layout_toStartOf="@+id/stopbutton" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="@dimen/button_hsize"
+                android:layout_height="@dimen/button_wsize"
+                android:id="@+id/rightbutton"
+                android:background="@drawable/right"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/stopbutton"
+                android:layout_toEndOf="@+id/stopbutton" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/linearLayout"
+                android:paddingBottom="40dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="速度:"
+                        android:id="@+id/textView2"
+                        android:textSize="@dimen/text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50"
+                        android:id="@+id/textViewSpeed"
+                        android:textSize="@dimen/text_size" />
+
+                </LinearLayout>
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/speedseekBar"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/rightbutton"
+                    android:layout_toEndOf="@+id/rightbutton"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginStart="26dp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

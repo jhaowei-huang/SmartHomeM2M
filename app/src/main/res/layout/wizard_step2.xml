@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wizard_step2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/contentView_horizontal_margin"
+    android:layout_marginRight="@dimen/contentView_horizontal_margin"
+    android:layout_marginTop="@dimen/contentView_vertical_margin"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/smartHomeAddRuleWizard_step2_title"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_size_title" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="@dimen/space_height" />
+
+        <TextView
+            android:id="@+id/textView_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/contentView_horizontal_margin"
+            android:layout_marginRight="@dimen/contentView_horizontal_margin"
+            android:text="@string/smartHomeAddRuleWizard_step2_message"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_size_message" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="@dimen/space_height" />
+
+        <Button
+            android:id="@+id/btn_chooseDevice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/contentView_horizontal_margin"
+            android:layout_marginRight="@dimen/contentView_horizontal_margin"
+            android:text="@string/smartHomeAddRuleWizard_step2_chooseDevice"
+            android:textAlignment="viewStart" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/contentView_horizontal_margin"
+            android:layout_marginRight="@dimen/contentView_horizontal_margin"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/btn_chooseResource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.45"
+                android:text="@string/smartHomeAddRuleWizard_step2_chooseResource"
+                android:textAlignment="viewStart" />
+
+            <Button
+                android:id="@+id/btn_chooseOperator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.55"
+                android:text="@string/smartHomeAddRuleWizard_step2_chooseOperator" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_inputValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/contentView_horizontal_margin"
+            android:layout_marginRight="@dimen/contentView_horizontal_margin"
+            android:text="@string/smartHomeAddRuleWizard_step2_inputValue"
+            android:textAlignment="viewStart" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="@dimen/space_height_half" />
+
+        <TextView
+            android:id="@+id/textView_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/contentView_horizontal_margin"
+            android:layout_marginRight="@dimen/contentView_horizontal_margin"
+            android:text="@string/smartHomeAddRuleWizard_step2_result"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_size_field" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="@dimen/space_height_half" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/contentView_horizontal_margin"
+            android:layout_marginRight="@dimen/contentView_horizontal_margin"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_addCondition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="@string/smartHomeAddRuleWizard_step2_addCondition" />
+
+            <Button
+                android:id="@+id/btn_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="@string/smartHomeAddRuleWizard_step2_reset" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="@dimen/space_height_half" />
+
+        <ListView
+            android:id="@+id/listView_conditions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/contentView_horizontal_margin"
+            android:layout_marginRight="@dimen/contentView_horizontal_margin"
+            android:fillViewport="true"
+            android:scrollbars="none" />
+
+    </LinearLayout>
+</ScrollView>

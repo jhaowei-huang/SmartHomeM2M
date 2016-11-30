@@ -30,6 +30,8 @@ import android.widget.ListView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import net.sf.clipsrules.jni.Environment;
+
 import org.eclipse.californium.core.CoapResponse;
 
 import java.util.ArrayList;
@@ -505,9 +507,14 @@ public class SmartHomeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (id == R.id.action_clipstest) {
+            Environment clips = new Environment();
+            String str = clips.eval("(+ 1 2 3 4 5 6 7 8 9 10)").toString();
+            Snackbar.make(findViewById(android.R.id.content),
+                    "(+ 1 2 3 4 5 6 7 8 9 10) = " + str, Snackbar.LENGTH_LONG).show();
+            
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -1,6 +1,10 @@
 package iot.ttu.edu.c4lab.smarthomem2m;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import iot.ttu.edu.c4lab.smarthomem2m.data.Rule;
+import iot.ttu.edu.c4lab.smarthomem2m.wizard.WizardActivity;
 
 /**
  * Created by jhaowei on 2016/11/11.
@@ -18,9 +23,11 @@ import iot.ttu.edu.c4lab.smarthomem2m.data.Rule;
 
 public class RuleListAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
+    private Context context;
 
     public RuleListAdapter(Context context) {
         super();
+        this.context = context;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -47,12 +54,17 @@ public class RuleListAdapter extends BaseAdapter {
         textView_ruleName.setText(getItem(i).toString());
         ImageButton button_edit = (ImageButton) ruleItem.findViewById(R.id.button_edit);
         ImageButton button_remove = (ImageButton) ruleItem.findViewById(R.id.button_remove);
-        Switch switch_enable = (Switch) ruleItem.findViewById(R.id.switch_enable);
-        switch_enable.setChecked(true);
+//        Switch switch_enable = (Switch) ruleItem.findViewById(R.id.switch_enable);
+//        switch_enable.setChecked(true);
 
         button_edit.setOnClickListener(event -> {
             Snackbar.make(parent, "press " + i + " edit",
                     Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+            Intent wizardIntent = new Intent(context, WizardActivity.class);
+            wizardIntent.putExtra("requestCode", SmartHomeActivity.EDIT_RULE);
+            wizardIntent.putExtra("ruleName", getItem(i).toString());
+            ((Activity) context).startActivityForResult(wizardIntent, SmartHomeActivity.EDIT_RULE);
 
             RuleListAdapter.this.notifyDataSetChanged();
         });

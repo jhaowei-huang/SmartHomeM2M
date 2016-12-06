@@ -1,7 +1,5 @@
 package iot.ttu.edu.c4lab.smarthomem2m;
 
-import android.util.Log;
-
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
@@ -52,7 +50,6 @@ public class M2MCoapClient {
     public static void parsingNewDataModel(String[] array) {
         // 得到.well-known/core的回傳字串，用逗號區分，得到一陣列
         for (String element : array) {
-            Log.d("device", element);
             // 檢查是否有符合<[IP]:[PORT]/[DEVICEID]]>，如：</192.168.6.154:5683/124>
             if (element.matches(DEVECIEREGEX)) {
                 // 去除角括號，並加入至deviceMap
@@ -65,6 +62,8 @@ public class M2MCoapClient {
                         device.setDeviceIp(strArray[0]);
                         device.setDeviceId(strArray[1]);
                         zumoMap.put(strArray[0] + "/" + strArray[1], device);
+                    } else if (strArray[1].equals("200")) {
+                        // end device更新用，忽略typeId = 200
                     } else {
                         Device device = new Device(strArray[0], DataTable.getDeviceName(strArray[1]));
                         device.setDeviceIp(strArray[0]);
@@ -83,9 +82,10 @@ public class M2MCoapClient {
                     // 查詢該項resource是屬於sensor類還是actuator類
                     int type = DataTable.getNewResourceType(strArray[3]);
                     Device device = zumoMap.get(strArray[0] + "/" + strArray[1]);
-                    // type = 0 表示為sensor，device加入一個sensor
-                    Log.d("device", "zumo type = " + type);
+                    // type = 0 表示為sensor，device加入一個sensorL
                     device.addactuator(strArray[2] + "/" + strArray[3]);
+                } else if (strArray[1].equals("200")) {
+                    // end device更新用，忽略typeId = 200
                 } else {
                     // 查詢該項resource是屬於sensor類還是actuator類
                     int type = DataTable.getNewResourceType(strArray[3]);
@@ -115,6 +115,30 @@ public class M2MCoapClient {
             deviceStringArray[i] = device.getIp() + "/" + device.getDeviceId() + "(" + device.getName() + ")";
             i++;
         }
+    }
+
+    public static String[] getDeviceStringArray(boolean isSensor) {
+        // 建立一個跟deviceMap一樣大小的陣列
+        deviceStringArray = new String[deviceMap.size()];
+
+        int i = 0;
+        if (isSensor) {
+            for (Device device : deviceMap.values()) {
+                if (device.getsensor().size() != 0) {
+                    deviceStringArray[i] = device.getIp() + "/" + device.getDeviceId() + "(" + device.getName() + ")";
+                    i++;
+                }
+            }
+        } else {
+            for (Device device : deviceMap.values()) {
+                if (device.getactuator().size() != 0) {
+                    deviceStringArray[i] = device.getIp() + "/" + device.getDeviceId() + "(" + device.getName() + ")";
+                    i++;
+                }
+            }
+        }
+
+        return deviceStringArray;
     }
 
     public static String[] getResourceStringArray(String key, boolean isSensor) {
@@ -157,8 +181,6 @@ public class M2MCoapClient {
 
         for (Rule m : ruleMap.values()) {
             for (Rule.Condition condition : m.getConditions()) {
-                Log.d("MainService", "observe device " + condition.sensorId);
-                Log.d("MainService", "observe resource " + condition.resourceId);
                 M2MCoapClient.observeSensor(deviceMap.get(condition.sensorId), condition.resourceId);
             }
         }
@@ -170,8 +192,6 @@ public class M2MCoapClient {
             observeSensorsHandlerMap.put(device.getDeviceId() + "/" + resourceid, handler);
             client.setURI(IP + "/" + device.getIp() + "/" + device.getDeviceId() + "/" + resourceid);
             client.observe(handler);
-
-            Log.d("MainService", "observe " + device.getName() + " " + resourceid);
         }
     }
 

@@ -15,6 +15,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -43,6 +44,7 @@ import iot.ttu.edu.c4lab.smarthomem2m.data.Rule;
 import iot.ttu.edu.c4lab.smarthomem2m.wifi.AutoConnect;
 import iot.ttu.edu.c4lab.smarthomem2m.wifi.WifiConnector;
 import iot.ttu.edu.c4lab.smarthomem2m.wizard.WizardActivity;
+import iot.ttu.edu.c4lab.smarthomem2m.wizard.WizardDialogBuilder;
 
 public class SmartHomeActivity extends AppCompatActivity {
     // 權限
@@ -65,6 +67,7 @@ public class SmartHomeActivity extends AppCompatActivity {
     private static String ip = "";
 
     public static int NEW_RULE = 0;
+    public static int EDIT_RULE = 1;
 
     private void requestMultiplePermissions() {
         String[] permissions = {
@@ -458,7 +461,9 @@ public class SmartHomeActivity extends AppCompatActivity {
         fab_menu.addMenuButton(fab_add);
 
         fab_add.setOnClickListener(view -> {
-            startActivityForResult(new Intent(this, WizardActivity.class), NEW_RULE);
+            Intent wizardIntent = new Intent(this, WizardActivity.class);
+            wizardIntent.putExtra("requestCode", NEW_RULE);
+            startActivityForResult(wizardIntent, NEW_RULE);
         });
 
         fab_start.setOnClickListener(view -> {
@@ -507,12 +512,83 @@ public class SmartHomeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_clipstest) {
+        if (id == R.id.action_demo) {
+            ArrayList<String> smartSocketStringList = new ArrayList<>();
+            ArrayList<String> brightSensorStringList = new ArrayList<>();
+
+            for (Device device : M2MCoapClient.deviceMap.values()) {
+                // 找出可用的智慧插座
+                if (device.getDeviceId().equals("100")) {
+                    smartSocketStringList.add(device.getIp() + "/" + device.getDeviceId());
+                } else {
+                    for (String resourceId : device.getResourceId()) {
+                        Log.d("device", device.getIp() + "/" + device.getDeviceId() + resourceId);
+                        // 找出可用的光感計
+                        if (resourceId.equals("3")) {
+                            brightSensorStringList.add(device.getIp() + "/" + device.getDeviceId() + resourceId);
+                        }
+                    }
+                }
+            }
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.dialog_demo_title_sensor);
+            builder.setSingleChoiceItems(brightSensorStringList.toArray(new String[brightSensorStringList.size()]), 0, null);
+            builder.setPositiveButton(R.string.dialog_dismiss_confirm_postive, (dialogInterface, i) -> {
+                builder2.show();
+
+//                try {
+//                    ListView lv = ((AlertDialog) dialogInterface).getListView();
+//                    Object checkedItem = lv.getAdapter().getItem(lv.getCheckedItemPosition());
+//
+//
+//                    Log.d("device", "builder2 show");
+//                } catch (Exception e) {
+//                    return;
+//                }
+            });
+            builder.setNegativeButton(R.string.dialog_dismiss_confirm_negative, null);
+
+            builder2.setTitle(R.string.dialog_demo_title_actuator);
+            builder2.setSingleChoiceItems(smartSocketStringList.toArray(new String[brightSensorStringList.size()]), 0, null);
+            builder2.setPositiveButton(R.string.dialog_dismiss_confirm_postive, (dialogInterface, i) -> {
+                try {
+                    ListView lv = ((AlertDialog) dialogInterface).getListView();
+                    Object checkedItem = lv.getAdapter().getItem(lv.getCheckedItemPosition());
+
+                } catch (Exception e) {
+                    return;
+                }
+            });
+            builder2.setNegativeButton(R.string.dialog_dismiss_confirm_negative, null);
+
+            builder.show();
+            return true;
+        } else if (id == R.id.action_info) {
+            Snackbar snackbar =
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "SSID = " + SmartHomeActivity.ssid + "\nPW = " + SmartHomeActivity.password,
+                            Snackbar.LENGTH_INDEFINITE);
+
+            snackbar.setAction(getString(R.string.dialog_dismiss_confirm_neutral), view -> {
+                snackbar.dismiss();
+            });
+
+            snackbar.show();
+            return true;
+        } else if (id == R.id.action_search) {
+            new DiscoverTask(getMyIp()).execute();
+            return true;
+        } else if (id == R.id.action_reconnect) {
+            reconnect();
+            return true;
+        } else if (id == R.id.action_clipstest) {
             Environment clips = new Environment();
             String str = clips.eval("(+ 1 2 3 4 5 6 7 8 9 10)").toString();
             Snackbar.make(findViewById(android.R.id.content),
                     "(+ 1 2 3 4 5 6 7 8 9 10) = " + str, Snackbar.LENGTH_LONG).show();
-            
             return true;
         }
 

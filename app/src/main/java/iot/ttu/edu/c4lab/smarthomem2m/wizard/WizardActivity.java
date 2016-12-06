@@ -22,7 +22,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import iot.ttu.edu.c4lab.smarthomem2m.M2MCoapClient;
 import iot.ttu.edu.c4lab.smarthomem2m.R;
+import iot.ttu.edu.c4lab.smarthomem2m.SmartHomeActivity;
 import iot.ttu.edu.c4lab.smarthomem2m.data.Rule;
 
 public class WizardActivity extends AppCompatActivity {
@@ -43,8 +45,21 @@ public class WizardActivity extends AppCompatActivity {
         // disable show keyboard automatically
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Rule rule = new Rule();
-        WizardFragment.init(rule);
+        int requestCode = getIntent().getIntExtra("requestCode", SmartHomeActivity.NEW_RULE);
+
+        if (requestCode == SmartHomeActivity.NEW_RULE) {
+            Rule rule = new Rule();
+            WizardFragment.init(rule);
+        } else if (requestCode == SmartHomeActivity.EDIT_RULE) {
+            String ruleName = getIntent().getStringExtra("ruleName");
+            Rule rule = M2MCoapClient.ruleMap.get(ruleName);
+            if (rule == null) {
+                setResult(RESULT_CANCELED);
+                finish();
+            } else {
+                WizardFragment.init(rule);
+            }
+        }
 
         wizardHandler = new Handler() {
             @Override

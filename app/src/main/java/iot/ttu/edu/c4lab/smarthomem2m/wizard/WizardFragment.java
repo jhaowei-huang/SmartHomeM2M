@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import iot.ttu.edu.c4lab.smarthomem2m.M2MCoapClient;
 import iot.ttu.edu.c4lab.smarthomem2m.R;
+import iot.ttu.edu.c4lab.smarthomem2m.SmartHomeActivity;
 import iot.ttu.edu.c4lab.smarthomem2m.data.Rule;
 
 /**
@@ -31,8 +32,22 @@ public class WizardFragment extends Fragment {
     public static final String ARG_SECTION_NUMBER = "ARG_SECTION_NUMBER";
     private static View[] steps = new View[WizardActivity.TOTAL_STEP];
     private static Rule rule;
+    private static String ruleName = "";
+    private static int requestCode = SmartHomeActivity.NEW_RULE;
 
     public static void init(Rule rule) {
+        if(rule == null) {
+            requestCode = SmartHomeActivity.NEW_RULE;
+            ruleName = "";
+            WizardFragment.rule = null;
+            return;
+        }
+        else if(rule.getRuleName() == null || rule.getRuleName().equals(""))
+            requestCode = SmartHomeActivity.NEW_RULE;
+        else
+            requestCode = SmartHomeActivity.EDIT_RULE;
+
+        ruleName = rule.getRuleName();
         WizardFragment.rule = rule;
         steps = new View[WizardActivity.TOTAL_STEP];
     }
@@ -100,13 +115,15 @@ public class WizardFragment extends Fragment {
                                       int before, int count) {
                 if (s.length() <= 0) {
                     textView_error.setVisibility(View.VISIBLE);
-                    rule.setRuleName("");
+                    ruleName = "";
                 } else {
                     textView_error.setVisibility(View.INVISIBLE);
-                    rule.setRuleName(editText_ruleName.getText().toString());
+                    ruleName = editText_ruleName.getText().toString();
                 }
             }
         });
+
+        editText_ruleName.setText(ruleName);
     }
 
     private void initStep2() {
@@ -126,7 +143,7 @@ public class WizardFragment extends Fragment {
 
                 Object[] obj = (Object[]) msg.obj;
                 if (obj[0].getClass().isEnum()) {
-                    if (obj[0].equals(WizardDialogBuilder.TYPE.DEVICE)) {
+                    if (obj[0].equals(WizardDialogBuilder.TYPE.DEVICE_SENSOR)) {
                         btn_chooseDevice.setText((String) obj[1]);
                     }
                     if (obj[0].equals(WizardDialogBuilder.TYPE.RESOURCE_SENSOR)) {
@@ -149,7 +166,7 @@ public class WizardFragment extends Fragment {
         };
 
         btn_chooseDevice.setOnClickListener(view -> {
-            WizardDialogBuilder dialogBuilder = new WizardDialogBuilder(getActivity(), WizardDialogBuilder.TYPE.DEVICE, handler, null);
+            WizardDialogBuilder dialogBuilder = new WizardDialogBuilder(getActivity(), WizardDialogBuilder.TYPE.DEVICE_SENSOR, handler, null);
             dialogBuilder.showDialog();
         });
 
@@ -194,6 +211,9 @@ public class WizardFragment extends Fragment {
             listView_conditions.setAdapter(adapter);
             listView_conditions.deferNotifyDataSetChanged();
         });
+
+        listView_conditions.setAdapter(adapter);
+        listView_conditions.deferNotifyDataSetChanged();
     }
 
     private String parseCondition(String device, String resource, String op, String value) {
@@ -227,7 +247,7 @@ public class WizardFragment extends Fragment {
 
                 Object[] obj = (Object[]) msg.obj;
                 if (obj[0].getClass().isEnum()) {
-                    if (obj[0].equals(WizardDialogBuilder.TYPE.DEVICE)) {
+                    if (obj[0].equals(WizardDialogBuilder.TYPE.DEVICE_ACTUATOR)) {
                         btn_chooseDevice.setText((String) obj[1]);
                     }
                     if (obj[0].equals(WizardDialogBuilder.TYPE.RESOURCE_ACTUATOR)) {
@@ -246,7 +266,7 @@ public class WizardFragment extends Fragment {
         };
 
         btn_chooseDevice.setOnClickListener(view -> {
-            WizardDialogBuilder dialogBuilder = new WizardDialogBuilder(getActivity(), WizardDialogBuilder.TYPE.DEVICE, handler, null);
+            WizardDialogBuilder dialogBuilder = new WizardDialogBuilder(getActivity(), WizardDialogBuilder.TYPE.DEVICE_ACTUATOR, handler, null);
             dialogBuilder.showDialog();
         });
 
@@ -274,6 +294,8 @@ public class WizardFragment extends Fragment {
             listView_actions.deferNotifyDataSetChanged();
         });
 
+        listView_actions.setAdapter(adapter);
+        listView_actions.deferNotifyDataSetChanged();
     }
 
     private String parseAction(String device, String resource, String value) {
@@ -295,24 +317,39 @@ public class WizardFragment extends Fragment {
         Button button_refresh = (Button) steps[3].findViewById(R.id.button_refresh);
         Button button_addRule = (Button) steps[3].findViewById(R.id.button_addRule);
 
+        if (requestCode == SmartHomeActivity.EDIT_RULE)
+            button_addRule.setText(R.string.smartHomeAddRuleWizard_step4_editRule);
+        else if (requestCode == SmartHomeActivity.NEW_RULE)
+            button_addRule.setText(R.string.smartHomeAddRuleWizard_step4_addRule);
+
         button_refresh.setOnClickListener(view -> {
             updateResult();
         });
 
         button_addRule.setOnClickListener(view -> {
-            if (rule.getRuleName() == null || rule.getRuleName().equals(""))
+            if (ruleName == null || ruleName.equals(""))
                 Toast.makeText(getContext(), R.string.smartHomeAddRuleWizard_step1_error, Toast.LENGTH_SHORT).show();
             else if (rule.getConditions().size() <= 0)
                 Toast.makeText(getContext(), R.string.smartHomeAddRuleWizard_step2_error, Toast.LENGTH_SHORT).show();
             else if (rule.getActions().size() <= 0)
                 Toast.makeText(getContext(), R.string.smartHomeAddRuleWizard_step3_error, Toast.LENGTH_SHORT).show();
-            else if (M2MCoapClient.ruleMap.get(rule.getRuleName()) != null)
+            else if (M2MCoapClient.ruleMap.get(ruleName) != null && requestCode == SmartHomeActivity.NEW_RULE)
                 Toast.makeText(getContext(), R.string.smartHomeAddRuleWizard_step4_error, Toast.LENGTH_SHORT).show();
             else {
-                M2MCoapClient.ruleMap.put(rule.getRuleName(), rule);
-                Message message = new Message();
-                message.setTarget(WizardActivity.wizardHandler);
-                message.sendToTarget();
+                if (requestCode == SmartHomeActivity.NEW_RULE) {
+                        rule.setRuleName(ruleName);
+                        M2MCoapClient.ruleMap.put(rule.getRuleName(), rule);
+                        Message message = new Message();
+                        message.setTarget(WizardActivity.wizardHandler);
+                        message.sendToTarget();
+                } else if (requestCode == SmartHomeActivity.EDIT_RULE) {
+                    M2MCoapClient.ruleMap.remove(rule.getRuleName());
+                    rule.setRuleName(ruleName);
+                    M2MCoapClient.ruleMap.put(rule.getRuleName(), rule);
+                    Message message = new Message();
+                    message.setTarget(WizardActivity.wizardHandler);
+                    message.sendToTarget();
+                }
             }
         });
 
@@ -329,7 +366,7 @@ public class WizardFragment extends Fragment {
         TextView textView_action = (TextView) steps[3].findViewById(R.id.textView_action);
 
         textView_ruleName.setText(getActivity().getString(R.string.smartHomeAddRuleWizard_step4_ruleName) +
-                rule.getRuleName());
+                ruleName);
 
         String conditionText = getActivity().getString(R.string.smartHomeAddRuleWizard_step4_condition) + "\n";
         for (Rule.Condition c : rule.getConditions()) {

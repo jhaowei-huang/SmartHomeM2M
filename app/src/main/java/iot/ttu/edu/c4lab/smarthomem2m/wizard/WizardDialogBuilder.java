@@ -21,7 +21,7 @@ public class WizardDialogBuilder extends AlertDialog.Builder {
     private static AlertDialog alertDialog = null;
 
     public enum TYPE {
-        DEVICE, RESOURCE_SENSOR, RESOURCE_ACTUATOR, OPERATOR, INTPUT_VALUE
+        DEVICE_SENSOR, DEVICE_ACTUATOR, RESOURCE_SENSOR, RESOURCE_ACTUATOR, OPERATOR, INTPUT_VALUE
     }
 
     public WizardDialogBuilder(Context context) {
@@ -31,8 +31,10 @@ public class WizardDialogBuilder extends AlertDialog.Builder {
     public WizardDialogBuilder(Context context, TYPE id, Handler responseHandler, String key) {
         super(context);
 
-        if (id == TYPE.DEVICE) {
-            setChooseDeviceDialog(responseHandler);
+        if (id == TYPE.DEVICE_SENSOR) {
+            setChooseDeviceDialog(responseHandler, true);
+        } else if (id == TYPE.DEVICE_ACTUATOR) {
+            setChooseDeviceDialog(responseHandler, false);
         } else if (id == TYPE.RESOURCE_SENSOR) {
             setChooseResourceDialog(responseHandler, key, true);
         } else if (id == TYPE.RESOURCE_ACTUATOR) {
@@ -44,17 +46,24 @@ public class WizardDialogBuilder extends AlertDialog.Builder {
         }
     }
 
-    private void setChooseDeviceDialog(Handler responseHandler) {
+    private void setChooseDeviceDialog(Handler responseHandler, boolean isSensor) {
         setTitle(R.string.smartHomeAddRuleWizard_step2_chooseDevice);
-        setSingleChoiceItems(M2MCoapClient.deviceStringArray, 0, null);
+        setSingleChoiceItems(M2MCoapClient.getDeviceStringArray(isSensor), 0, null);
         setPositiveButton(R.string.dialog_dismiss_confirm_postive, (dialogInterface, i) -> {
             try {
                 ListView lv = ((AlertDialog) dialogInterface).getListView();
                 Object checkedItem = lv.getAdapter().getItem(lv.getCheckedItemPosition());
                 Message msg = new Message();
-                msg.obj = new Object[]{
-                        TYPE.DEVICE,
-                        getContext().getString(R.string.smartHomeAddRuleWizard_step2_chooseDevice) + checkedItem};
+                if (isSensor) {
+                    msg.obj = new Object[]{
+                            TYPE.DEVICE_SENSOR,
+                            getContext().getString(R.string.smartHomeAddRuleWizard_step2_chooseDevice) + checkedItem};
+                } else {
+                    msg.obj = new Object[]{
+                            TYPE.DEVICE_ACTUATOR,
+                            getContext().getString(R.string.smartHomeAddRuleWizard_step2_chooseDevice) + checkedItem};
+                }
+
                 msg.setTarget(responseHandler);
                 msg.sendToTarget();
             } catch (Exception e) {
@@ -135,7 +144,6 @@ public class WizardDialogBuilder extends AlertDialog.Builder {
         });
 
         setNegativeButton(R.string.dialog_dismiss_confirm_negative, null);
-//        input.setBackgroundResource(android.R.color.transparent);
         InputFilter filter = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {

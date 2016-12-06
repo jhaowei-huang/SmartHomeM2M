@@ -34,7 +34,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".wizard.WizardActivity" />
+        <activity
+            android:name=".wizard.WizardActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="iot.ttu.edu.c4lab.smarthomem2m.M2MCoapClientService" />
     </application>

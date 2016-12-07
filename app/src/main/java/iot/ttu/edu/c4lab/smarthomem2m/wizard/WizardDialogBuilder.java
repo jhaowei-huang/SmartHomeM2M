@@ -48,7 +48,7 @@ public class WizardDialogBuilder extends AlertDialog.Builder {
 
     private void setChooseDeviceDialog(Handler responseHandler, boolean isSensor) {
         setTitle(R.string.smartHomeAddRuleWizard_step2_chooseDevice);
-        setSingleChoiceItems(M2MCoapClient.getDeviceStringArray(isSensor), 0, null);
+        setSingleChoiceItems(M2MCoapClient.deviceStringArray, 0, null);
         setPositiveButton(R.string.dialog_dismiss_confirm_postive, (dialogInterface, i) -> {
             try {
                 ListView lv = ((AlertDialog) dialogInterface).getListView();

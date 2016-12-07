@@ -262,6 +262,10 @@ public class SmartHomeActivity extends AppCompatActivity {
         if (listView_ruleList != null) {
             RuleListAdapter ruleListAdapter = (RuleListAdapter) listView_ruleList.getAdapter();
             ruleListAdapter.notifyDataSetChanged();
+
+            Log.d("MainService", "rule number = " + M2MCoapClient.ruleMap.size());
+        } else {
+            Log.d("MainService", "list is null");
         }
     }
 
@@ -521,33 +525,56 @@ public class SmartHomeActivity extends AppCompatActivity {
                 if (device.getDeviceId().equals("100")) {
                     smartSocketStringList.add(device.getIp() + "/" + device.getDeviceId());
                 } else {
-                    for (String resourceId : device.getResourceId()) {
-                        Log.d("device", device.getIp() + "/" + device.getDeviceId() + resourceId);
+                    for (String resourceId : device.getsensor()) {
                         // 找出可用的光感計
-                        if (resourceId.equals("3")) {
-                            brightSensorStringList.add(device.getIp() + "/" + device.getDeviceId() + resourceId);
+                        if (resourceId.equals("0/3")) {
+                            brightSensorStringList.add(device.getIp() + "/" + device.getDeviceId() + "/" + resourceId);
                         }
                     }
                 }
             }
 
+            if (brightSensorStringList.size() == 0 || smartSocketStringList.size() == 0) {
+                Snackbar.make(findViewById(android.R.id.content),
+                        getString(R.string.dialog_demo_error_message), Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+
+            Rule turnOnRule = new Rule("1");
+            Rule turnOffRule = new Rule("2");
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
             builder.setTitle(R.string.dialog_demo_title_sensor);
             builder.setSingleChoiceItems(brightSensorStringList.toArray(new String[brightSensorStringList.size()]), 0, null);
             builder.setPositiveButton(R.string.dialog_dismiss_confirm_postive, (dialogInterface, i) -> {
-                builder2.show();
+                try {
+                    ListView lv = ((AlertDialog) dialogInterface).getListView();
+                    Object checkedItem = lv.getAdapter().getItem(lv.getCheckedItemPosition());
 
-//                try {
-//                    ListView lv = ((AlertDialog) dialogInterface).getListView();
-//                    Object checkedItem = lv.getAdapter().getItem(lv.getCheckedItemPosition());
-//
-//
-//                    Log.d("device", "builder2 show");
-//                } catch (Exception e) {
-//                    return;
-//                }
+                    Log.d("demoRule", (String) checkedItem);
+                    String[] array = checkedItem.toString().split("/");
+                    turnOnRule.addCondition(
+                            "AND",
+                            array[0] + "/" + array[1],
+                            array[2] + "/" + array[3],
+                            ">",
+                            "600",
+                            getString(R.string.dialog_demo_turnon_condition_text));
+
+                    turnOffRule.addCondition(
+                            "AND",
+                            array[0] + "/" + array[1],
+                            array[2] + "/" + array[3],
+                            "<",
+                            "400",
+                            getString(R.string.dialog_demo_turnoff_condition_text));
+
+                    builder2.show();
+
+                } catch (Exception e) {
+                    return;
+                }
             });
             builder.setNegativeButton(R.string.dialog_dismiss_confirm_negative, null);
 
@@ -558,6 +585,24 @@ public class SmartHomeActivity extends AppCompatActivity {
                     ListView lv = ((AlertDialog) dialogInterface).getListView();
                     Object checkedItem = lv.getAdapter().getItem(lv.getCheckedItemPosition());
 
+                    Log.d("demoRule", (String) checkedItem);
+
+                    String[] array = checkedItem.toString().split("/");
+                    turnOnRule.addAction(
+                            array[0] + "/" + array[1],
+                            "1/200",
+                            "1",
+                            getString(R.string.dialog_demo_turnon_action_text));
+
+                    turnOffRule.addAction(
+                            array[0] + "/" + array[1],
+                            "1/200",
+                            "0",
+                            getString(R.string.dialog_demo_turnoff_action_text));
+
+                    M2MCoapClient.ruleMap.put(turnOnRule.getRuleName(), turnOnRule);
+                    M2MCoapClient.ruleMap.put(turnOffRule.getRuleName(), turnOffRule);
+                    updateListView();
                 } catch (Exception e) {
                     return;
                 }

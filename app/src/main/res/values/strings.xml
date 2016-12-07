@@ -21,7 +21,11 @@
     <string name="gatewayListTitle">可用的連線</string>
     <string name="nogateway">沒有可用的連線</string>
 
-    <string name="dialog_demo_message">是</string>
+    <string name="dialog_demo_turnon_condition_text">感測器光感計大於600</string>
+    <string name="dialog_demo_turnon_action_text">智慧插座開關設定為1</string>
+    <string name="dialog_demo_turnoff_condition_text">感測器光感計小於400</string>
+    <string name="dialog_demo_turnoff_action_text">智慧插座開關設定為0</string>
+    <string name="dialog_demo_error_message">找不到光感計或智慧插座</string>
     <string name="dialog_demo_title_sensor">選擇光感計</string>
     <string name="dialog_demo_title_actuator">選擇智慧插座</string>
 
